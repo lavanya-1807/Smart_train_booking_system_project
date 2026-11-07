@@ -1,0 +1,217 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+.login-page {
+    min-height: 78vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 15px;
+    background:
+      radial-gradient(circle at top left, #d9f5ff, transparent 45%),
+      linear-gradient(135deg, #eef5ff, #f8fbff);
+    border-radius: 22px;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 440px;
+    padding: 35px;
+    background: rgba(255,255,255,.92);
+    border: 1px solid #e1eaf5;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(22, 55, 100, .14);
+    animation: appear .6s ease;
+}
+
+@keyframes appear {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.train-icon {
+    width: 68px;
+    height: 68px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 15px;
+    font-size: 34px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #d9f5ff, #e8eaff);
+}
+
+.login-card h1 {
+    text-align: center;
+    color: #142746;
+    margin: 0 0 8px;
+    font-size: 28px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #738198;
+    margin: 0 0 28px;
+    font-size: 14px;
+}
+
+.login-card label {
+    display: block;
+    color: #293b56;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 17px 0 8px;
+}
+
+.login-card input,
+.login-card select {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #d9e2ef;
+    border-radius: 12px;
+    background: #f9fbff;
+    color: #172943;
+    font-size: 15px;
+    outline: none;
+    transition: .2s;
+}
+
+.login-card input:focus,
+.login-card select:focus {
+    border-color: #2388e8;
+    box-shadow: 0 0 0 4px rgba(35,136,232,.12);
+    background: white;
+}
+
+.password-wrap {
+    display: flex;
+    gap: 8px;
+}
+
+.password-wrap input {
+    flex: 1;
+    min-width: 0;
+}
+
+.show-password {
+    border: 1px solid #d9e2ef;
+    border-radius: 12px;
+    padding: 0 12px;
+    background: white;
+    cursor: pointer;
+    color: #23476c;
+}
+
+.login-btn {
+    width: 100%;
+    margin-top: 25px;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #1769d2, #08a6bb);
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(23,105,210,.2);
+    transition: transform .2s, box-shadow .2s;
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(23,105,210,.3);
+}
+
+.register-text {
+    text-align: center;
+    margin: 22px 0 0;
+    color: #718096;
+    font-size: 14px;
+}
+
+.register-text a {
+    color: #1769d2;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.login-note {
+    text-align: center;
+    margin-top: 20px;
+    color: #96a1b2;
+    font-size: 12px;
+}
+
+@media (max-width: 480px) {
+    .login-card { padding: 25px 20px; }
+    .login-card h1 { font-size: 24px; }
+}
+</style>
+
+<div class="login-page">
+  <div class="login-card">
+    <div class="train-icon">🚆</div>
+
+    <h1>Welcome Aboard!</h1>
+    <p class="subtitle">
+      Sign in to your Smart Train Booking account
+    </p>
+
+    <form method="POST" action="{{ url_for('login') }}">
+      <label for="role">Login as</label>
+      <select id="role" name="role" required>
+        <option value="user">👤 User Login</option>
+        <option value="admin">🛡️ Admin Login</option>
+      </select>
+
+      <label for="username">Username</label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        placeholder="Enter your username"
+        autocomplete="username"
+        required
+      >
+
+      <label for="password">Password</label>
+      <div class="password-wrap">
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Enter your password"
+          autocomplete="current-password"
+          required
+        >
+        <button class="show-password" type="button"
+                onclick="togglePassword()" aria-label="Show or hide password">
+          👁️
+        </button>
+      </div>
+
+      <button type="submit" class="login-btn">
+        Login Securely →
+      </button>
+    </form>
+
+    <p class="register-text">
+      New user?
+      <a href="{{ url_for('register') }}">Create an account</a>
+    </p>
+
+    <div class="login-note">
+      🚉 Smart Train Booking · Demo Application
+    </div>
+  </div>
+</div>
+
+<script>
+function togglePassword() {
+    const password = document.getElementById("password");
+    password.type = password.type === "password" ? "text" : "password";
+}
+</script>
+{% endblock %}

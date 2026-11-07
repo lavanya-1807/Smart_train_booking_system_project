@@ -1,0 +1,499 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .results-page {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px 12px;
+    }
+
+    .results-header {
+        background: linear-gradient(135deg, #123b76, #2878d0);
+        color: white;
+        padding: 28px;
+        border-radius: 16px;
+        margin-bottom: 24px;
+    }
+
+    .results-header h1 {
+        margin: 0 0 12px;
+        font-size: 28px;
+    }
+
+    .results-header p {
+        margin: 7px 0;
+    }
+
+    .train-card {
+        background: white;
+        border: 1px solid #dce5f0;
+        border-radius: 14px;
+        padding: 22px;
+        margin-bottom: 18px;
+        box-shadow: 0 5px 18px rgba(20, 50, 90, 0.06);
+    }
+
+    .train-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .train-name {
+        color: #173c70;
+        margin: 0 0 8px;
+        font-size: 21px;
+    }
+
+    .train-id {
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .train-times {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin: 22px 0;
+        padding: 16px;
+        background: #f3f7fc;
+        border-radius: 10px;
+    }
+
+    .time-block strong {
+        display: block;
+        color: #173c70;
+        font-size: 20px;
+    }
+
+    .time-block span {
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .route-arrow {
+        color: #2878d0;
+        font-size: 24px;
+    }
+
+    .train-info {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin: 16px 0;
+    }
+
+    .info-chip {
+        background: #edf5ff;
+        color: #174a88;
+        padding: 9px 13px;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
+    .seat-available {
+        color: #167647;
+        font-weight: bold;
+    }
+
+    .seat-unavailable {
+        color: #b42318;
+        font-weight: bold;
+    }
+
+    details {
+        margin: 12px 0;
+        color: #174a88;
+    }
+
+    details summary {
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .booking-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+    }
+
+    .booking-actions form {
+        margin: 0;
+    }
+
+    .book-btn {
+        display: inline-block;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 18px;
+        background: #1768c4;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .book-btn:hover {
+        background: #10539f;
+    }
+
+    .gap-btn {
+        background: #e9a23b;
+        color: #202020;
+    }
+
+    .gap-btn:hover {
+        background: #d48a20;
+    }
+
+    .tatkal-btn {
+        background: #198754;
+        color: white;
+    }
+
+    .tatkal-btn:hover {
+        background: #146c43;
+    }
+
+    .disabled-btn {
+        background: #d7dee8;
+        color: #667085;
+        cursor: not-allowed;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 18px;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-top: 10px;
+        color: #1768c4;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .empty-results {
+        background: white;
+        border: 1px solid #dce5f0;
+        border-radius: 12px;
+        padding: 24px;
+    }
+
+    @media (max-width: 600px) {
+        .results-header {
+            padding: 20px;
+        }
+
+        .train-card {
+            padding: 16px;
+        }
+
+        .booking-actions {
+            flex-direction: column;
+        }
+
+        .booking-actions form,
+        .booking-actions button,
+        .booking-actions a {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="results-page">
+
+    <section class="results-header">
+        <h1>Available Train Options</h1>
+
+        <p>
+            <strong>{{ source }}</strong>
+            &nbsp; → &nbsp;
+            <strong>{{ destination }}</strong>
+        </p>
+
+        <p>Journey date: {{ journey_date }}</p>
+
+        <p>Passenger: {{ passenger_name }}</p>
+    </section>
+
+    {% if train_results %}
+
+        {% for result in train_results %}
+
+            <article class="train-card">
+
+                <div class="train-top">
+
+                    <div>
+                        <h2 class="train-name">
+                            {{ result.train.name }}
+                        </h2>
+
+                        <span class="train-id">
+                            Train No: {{ result.train.number or result.train.id }}
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>
+                            {% if result.train.fare is defined and result.train.fare %}
+                                ₹{{ result.train.fare }}
+                            {% else %}
+                                Fare unavailable
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                </div>
+
+                <div class="train-times">
+
+                    <div class="time-block">
+                        <strong>
+                            {{ result.train.departure or 'N/A' }}
+                        </strong>
+                        <span>{{ source }}</span>
+                    </div>
+
+                    <span class="route-arrow">→</span>
+
+                    <div class="time-block">
+                        <strong>
+                            {{ result.train.arrival or 'N/A' }}
+                        </strong>
+                        <span>{{ destination }}</span>
+                    </div>
+
+                </div>
+
+                {% if result.train.route %}
+
+                    <div class="train-info">
+                        <div class="info-chip">
+                            <strong>Route:</strong>
+                            {{ result.train.route | join(' → ') }}
+                        </div>
+                    </div>
+
+                    {% if result.source_idx is defined and result.destination_idx is defined %}
+
+                        {% set intermediate =
+                            result.train.route[result.source_idx + 1:result.destination_idx] %}
+
+                        <details>
+                            <summary>View intermediate stations</summary>
+
+                            {% if intermediate %}
+                                <ol>
+                                    {% for station in intermediate %}
+                                        <li>{{ station }}</li>
+                                    {% endfor %}
+                                </ol>
+                            {% else %}
+                                <p>No intermediate stations for this section.</p>
+                            {% endif %}
+
+                        </details>
+
+                    {% endif %}
+
+                {% endif %}
+
+                <div class="train-info">
+
+                    <div class="info-chip">
+                        Available seats:
+                        <strong>
+                            {{ result.available_seats | default(0) }}
+                        </strong>
+                    </div>
+
+                    <div class="info-chip">
+                        Normal seat:
+
+                        {% if result.normal_seat %}
+                            <span class="seat-available">
+                                S1-{{ result.normal_seat }}
+                            </span>
+                        {% else %}
+                            <span class="seat-unavailable">
+                                Not available
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="info-chip">
+                        Gap seat:
+
+                        {% if result.gap_seat %}
+                            <span class="seat-available">
+                                S1-{{ result.gap_seat }}
+                            </span>
+                        {% else %}
+                            <span class="seat-unavailable">
+                                Not available
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="info-chip">
+                        Tatkal seats:
+                        <strong>
+                            {{ result.tatkal_available | default(0) }}
+                        </strong>
+                    </div>
+
+                </div>
+
+                <div class="booking-actions">
+
+                    <!-- NORMAL BOOKING -->
+
+                    {% if result.normal_seat %}
+
+                        <form action="{{ url_for('book') }}" method="post">
+
+                            <input type="hidden"
+                                   name="passenger_name"
+                                   value="{{ passenger_name }}">
+
+                            <input type="hidden"
+                                   name="train_id"
+                                   value="{{ result.train.id }}">
+
+                            <input type="hidden"
+                                   name="journey_date"
+                                   value="{{ journey_date }}">
+
+                            <input type="hidden"
+                                   name="source"
+                                   value="{{ source }}">
+
+                            <input type="hidden"
+                                   name="destination"
+                                   value="{{ destination }}">
+
+                            <input type="hidden"
+                                   name="mode"
+                                   value="normal">
+
+                            <button type="submit" class="book-btn">
+                                Normal Booking
+                            </button>
+
+                        </form>
+
+                    {% else %}
+
+                        <button type="button" class="disabled-btn" disabled>
+                            Normal Booking
+                        </button>
+
+                    {% endif %}
+
+
+                    <!-- MULTI-LEG BOOKING -->
+
+                    {% if result.gap_seat %}
+
+                        <form action="{{ url_for('book') }}" method="post">
+
+                            <input type="hidden"
+                                   name="passenger_name"
+                                   value="{{ passenger_name }}">
+
+                            <input type="hidden"
+                                   name="train_id"
+                                   value="{{ result.train.id }}">
+
+                            <input type="hidden"
+                                   name="journey_date"
+                                   value="{{ journey_date }}">
+
+                            <input type="hidden"
+                                   name="source"
+                                   value="{{ source }}">
+
+                            <input type="hidden"
+                                   name="destination"
+                                   value="{{ destination }}">
+
+                            <input type="hidden"
+                                   name="mode"
+                                   value="gap">
+
+                            <input type="hidden"
+                                   name="accept_gap"
+                                   value="yes">
+
+                            <button type="submit" class="book-btn gap-btn">
+                                Multi-Leg Booking
+                            </button>
+
+                        </form>
+
+                    {% else %}
+
+                        <button type="button" class="disabled-btn" disabled>
+                            Multi-Leg Booking
+                        </button>
+
+                    {% endif %}
+
+
+                    <!-- TATKAL BOOKING -->
+
+                    {% if not result.normal_seat
+                          and result.available_seats == 0
+                          and result.tatkal_available | default(0) > 0 %}
+
+                        <a class="book-btn tatkal-btn"
+                           href="{{ url_for(
+                               'tatkal',
+                               passenger_name=passenger_name,
+                               train_id=result.train.id,
+                               journey_date=journey_date,
+                               source=source,
+                               destination=destination
+                           ) }}">
+                            Tatkal Booking
+                        </a>
+
+                    {% else %}
+
+                        <button type="button" class="disabled-btn" disabled>
+                            Tatkal Booking
+                        </button>
+
+                    {% endif %}
+
+                </div>
+
+            </article>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty-results">
+            <h3>No trains found</h3>
+            <p>Please try another route or journey date.</p>
+        </div>
+
+    {% endif %}
+
+    <a class="back-link" href="{{ url_for('index') }}">
+        ← Back to Search
+    </a>
+
+</div>
+
+{% endblock %}

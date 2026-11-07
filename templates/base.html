@@ -1,0 +1,117 @@
+```html
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{{ title or "Smart Train Booking" }}</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <header class="topbar">
+
+        <a class="brand" href="{{ url_for('index') }}">
+            🚆 Smart Train Booking
+        </a>
+
+        <nav>
+            {% if current_user.is_authenticated %}
+
+                <!-- Common link -->
+                <a href="{{ url_for('index') }}">Home</a>
+
+                {% if current_user.role == 'admin' %}
+
+                    <!-- Admin Navigation -->
+                    <a href="{{ url_for('bookings') }}">
+                        All Bookings
+                    </a>
+
+                    <a href="{{ url_for('tatkal') }}">
+                        Tatkal Queue
+                    </a>
+
+                    <a href="{{ url_for('dashboard') }}">
+                        Analytics
+                    </a>
+
+                {% else %}
+
+                    <!-- User Navigation -->
+                    <a href="{{ url_for('bookings') }}">
+                        My Bookings
+                    </a>
+
+                    <a href="{{ url_for('tatkal') }}">
+                        Tatkal
+                    </a>
+
+                {% endif %}
+
+                <!-- Logout -->
+                <form
+                    method="POST"
+                    action="{{ url_for('logout') }}"
+                    style="display: inline;"
+                >
+                    <button type="submit">Logout</button>
+                </form>
+
+            {% else %}
+
+                <!-- Guest Navigation -->
+                <a href="{{ url_for('login') }}">
+                    Login
+                </a>
+
+                <a href="{{ url_for('register') }}">
+                    Register
+                </a>
+
+            {% endif %}
+        </nav>
+
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+                <div class="messages">
+
+                    {% for category, message in messages %}
+                        <div class="alert {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+
+                </div>
+            {% endif %}
+
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        Academic prototype · Simulated data only ·
+        Not connected to IRCTC / Indian Railways
+    </footer>
+
+</body>
+</html>
+```

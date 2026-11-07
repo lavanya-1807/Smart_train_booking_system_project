@@ -1,0 +1,12 @@
+pnr,passenger_name,train_id,train_name,journey_date,source,destination,coach,seat_no,booking_type,status,created_at
+DEMO2710001126,Rubavathi,D12659,Demo Intercity Express,2004-11-03,Chennai,Bangalore,S1,1,Normal,CONFIRMED,2026-10-10T15:27:10
+DEMO5632973978,lavi,D12659,Demo Intercity Express,2026-10-20,Chennai,Station 4,S1,1,Normal,CONFIRMED,2026-10-11T17:56:32
+DEMO5740082702,ruba,D12659,Demo Intercity Express,2026-10-20,Station 4,Bangalore,S1,1,Normal,CONFIRMED,2026-10-11T17:57:40
+DEMO0349248874,indira,D12657,Demo Chennai–Bangalore Express,2004-11-03,Chennai,Bangalore,S1,1,Normal,CONFIRMED,2026-10-11T18:03:49
+DEMO0444663413,sharma,D12657,Demo Chennai–Bangalore Express,2004-11-03,Chennai,Bangalore,S1,2,Normal,CONFIRMED,2026-10-11T18:04:44
+TATKAL000002,madhu,D12657,Demo Chennai–Bangalore Express,2026-10-20,Chennai,Station 3,S1,1,Tatkal,CANCELLED,2026-10-11T18:52:23
+TATKAL000003,priya,D12657,Demo Chennai–Bangalore Express,2026-10-20,Chennai,Station 3,S1,2,Tatkal,CONFIRMED,2026-10-11T18:55:36
+DEMO5309287198,Meena,D12657,Demo Chennai–Bangalore Express,2005-02-10,Chennai,Bangalore,S1,1,Normal,CONFIRMED,2026-10-12T11:53:09
+TATKAL000004,pavi,D12659,Demo Intercity Express,2026-10-20,Chennai,Station 4,S1,2,Tatkal,CONFIRMED,2026-10-12T11:53:37
+DEMO4523080753,madhumithra,D12657,Demo Chennai–Bangalore Express,2026-10-20,Chennai,Station 3,S1,1,Normal,CONFIRMED,2026-10-15T21:45:23
+DEMO5149309687,nagalavanya,D12657,Demo Chennai–Bangalore Express,2026-10-20,Chennai,Bangalore,S1,1,Multi-Leg Gap,CONFIRMED,2026-10-15T21:51:49

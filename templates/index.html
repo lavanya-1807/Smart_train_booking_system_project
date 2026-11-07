@@ -1,0 +1,361 @@
+
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  .train-home {
+    color: #15345b;
+    padding-bottom: 32px;
+  }
+
+  .welcome-hero {
+    position: relative;
+    overflow: hidden;
+    min-height: 240px;
+    padding: 36px;
+    border-radius: 18px;
+    color: white;
+    background: linear-gradient(115deg, #07366d, #0879cf);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .welcome-hero::after {
+    content: "🚆";
+    position: absolute;
+    right: 6%;
+    bottom: -28px;
+    font-size: clamp(100px, 18vw, 190px);
+    opacity: .19;
+    transform: rotate(-5deg);
+    pointer-events: none;
+  }
+
+  .hero-copy {
+    position: relative;
+    z-index: 1;
+    max-width: 540px;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    padding: 6px 12px;
+    border: 1px solid #ffffff60;
+    border-radius: 20px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+  }
+
+  .welcome-hero h1 {
+    color: white;
+    font-size: clamp(30px, 4vw, 44px);
+    line-height: 1.15;
+    margin: 0 0 12px;
+  }
+
+  .welcome-hero p {
+    color: #e1efff;
+    max-width: 440px;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .search-panel {
+    background: white;
+    border: 1px solid #dce7f3;
+    border-radius: 16px;
+    padding: 25px;
+    margin-top: -24px;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 12px 32px #12365b12;
+  }
+
+  .search-heading {
+    margin-bottom: 20px;
+  }
+
+  .search-heading h2 {
+    margin: 0 0 6px;
+    font-size: 23px;
+    color: #12365d;
+  }
+
+  .search-heading p {
+    color: #718096;
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .booking-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px;
+  }
+
+  .booking-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .booking-field label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #27476b;
+  }
+
+  .booking-field input,
+  .booking-field select {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 46px;
+    padding: 11px 12px;
+    color: #243b53;
+    background: #f9fbfe;
+    border: 1px solid #d6e1ee;
+    border-radius: 8px;
+    font: inherit;
+    outline: none;
+  }
+
+  .booking-field input:focus,
+  .booking-field select:focus {
+    border-color: #0879dc;
+    box-shadow: 0 0 0 3px #0879dc18;
+  }
+
+  .search-action {
+    display: flex;
+    align-items: end;
+  }
+
+  .search-button {
+    width: 100%;
+    min-height: 46px;
+    border: 0;
+    border-radius: 8px;
+    background: #0875dc;
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .2s, transform .2s;
+  }
+
+  .search-button:hover {
+    background: #075db0;
+    transform: translateY(-1px);
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 17px;
+    margin-top: 24px;
+  }
+
+  .feature-card {
+    background: white;
+    padding: 21px;
+    border: 1px solid #e0e9f3;
+    border-radius: 13px;
+  }
+
+  .feature-icon {
+    width: 43px;
+    height: 43px;
+    display: grid;
+    place-items: center;
+    background: #eaf4ff;
+    border-radius: 11px;
+    font-size: 23px;
+    margin-bottom: 13px;
+  }
+
+  .feature-card h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+    color: #163d68;
+  }
+
+  .feature-card p {
+    margin: 0;
+    color: #718096;
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+  .journey-note {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 12px;
+    color: #73849a;
+  }
+
+  @media (min-width: 900px) {
+    .booking-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .search-action {
+      grid-column: 1 / -1;
+    }
+
+    .search-action .search-button {
+      max-width: 230px;
+      margin-left: auto;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .welcome-hero {
+      min-height: 200px;
+      padding: 25px 20px 42px;
+    }
+
+    .search-panel {
+      padding: 19px;
+      margin-top: -18px;
+    }
+
+    .booking-grid,
+    .feature-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="train-home">
+
+  <section class="welcome-hero">
+    <div class="hero-copy">
+      <span class="hero-tag">SMART TRAIN BOOKING SYSTEM</span>
+      <h1>Book Your Train Ticket</h1>
+      <p>
+        Safe · Fast · Convenient<br>
+        Search trains, check seat availability, and choose
+        the journey that works best for you.
+      </p>
+    </div>
+  </section>
+
+  <section class="search-panel">
+    <div class="search-heading">
+      <h2>Find Your Train</h2>
+      <p>Enter your journey details to explore booking options.</p>
+    </div>
+
+    <form action="{{ url_for('search') }}" method="post">
+      <div class="booking-grid">
+
+        <div class="booking-field">
+          <label for="passenger_name">Passenger Name</label>
+          <input
+            id="passenger_name"
+            name="passenger_name"
+            type="text"
+            placeholder="Enter passenger name"
+            required
+            minlength="2"
+          >
+        </div>
+
+        <div class="booking-field">
+            <label for="passenger_age">Passenger Age</label>
+            <input
+                id="passenger_age"
+                name="passenger_age"
+                type="number"
+                min="1"
+                max="120"
+                placeholder="Enter passenger age"
+                required
+            >
+        </div>
+
+        <div class="booking-field">
+          <label for="journey_date">Journey Date</label>
+          <input
+            id="journey_date"
+            name="journey_date"
+            type="date"
+            min="{{ today }}"
+            required
+          >
+        </div>
+
+        <div class="booking-field">
+            <label for="source">From Station</label>
+            <input
+                id="source"
+                name="source"
+                type="text"
+                list="station-list"
+                placeholder="Type station name (e.g. CHE)"
+                autocomplete="off"
+                required
+            >
+        </div>
+
+        <div class="booking-field">
+            <label for="destination">To Station</label>
+            <input
+                id="destination"
+                name="destination"
+                type="text"
+                list="station-list"
+                placeholder="Type destination (e.g. COI)"
+                autocomplete="off"
+                required
+            >
+        </div>
+
+<datalist id="station-list">
+  {% for s in stations %}
+    <option value="{{ s }}">
+  {% endfor %}
+</datalist>
+    
+
+        <div class="search-action">
+          <button class="search-button" type="submit">
+            🔍 Search Trains
+          </button>
+        </div>
+
+      </div>
+    </form>
+  </section>
+
+  <section class="feature-grid">
+    <article class="feature-card">
+      <div class="feature-icon">🪑</div>
+      <h3>Smart Seat Allocation</h3>
+      <p>Check seat availability for your selected route before booking.</p>
+    </article>
+
+    <article class="feature-card">
+      <div class="feature-icon">🎫</div>
+      <h3>Easy Booking</h3>
+      <p>Review available booking options and keep track of your PNR.</p>
+    </article>
+
+    <article class="feature-card">
+      <div class="feature-icon">⏳</div>
+      <h3>Tatkal Queue</h3>
+      <p>Submit Tatkal requests and process them using FIFO queue rules.</p>
+    </article>
+  </section>
+
+  <p class="journey-note">
+    Smart Train Booking System · Academic Project Prototype
+  </p>
+
+</div>
+
+{% endblock %}

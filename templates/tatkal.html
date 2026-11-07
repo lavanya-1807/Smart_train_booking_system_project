@@ -1,0 +1,477 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .tatkal-page {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px 12px;
+    }
+
+    .tatkal-header {
+        background: linear-gradient(135deg, #123b76, #2878d0);
+        color: white;
+        padding: 28px;
+        border-radius: 16px;
+        margin-bottom: 24px;
+    }
+
+    .tatkal-header h1 {
+        margin: 0 0 10px;
+        font-size: 28px;
+    }
+
+    .tatkal-panel {
+        background: white;
+        border: 1px solid #dce5f0;
+        border-radius: 14px;
+        padding: 22px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 18px rgba(20, 50, 90, 0.06);
+    }
+
+    .tatkal-form {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .tatkal-form label {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        font-weight: 600;
+        color: #173c70;
+    }
+
+    .tatkal-form input,
+    .tatkal-form select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 15px;
+        box-sizing: border-box;
+    }
+
+    .tatkal-submit {
+        background: #1768c4;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 13px 20px;
+        font-weight: bold;
+        cursor: pointer;
+        grid-column: 1 / -1;
+    }
+
+    .tatkal-submit:hover {
+        background: #10539f;
+    }
+
+    .tatkal-submit:disabled {
+        background: #d7dee8;
+        cursor: not-allowed;
+    }
+
+    .availability {
+        padding: 6px 11px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        display: inline-block;
+    }
+
+    .available {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .closed {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .full {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .invalid {
+        background: #e2e8f0;
+        color: #475569;
+    }
+
+    .queue-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 850px;
+    }
+
+    .queue-table th,
+    .queue-table td {
+        padding: 13px;
+        border-bottom: 1px solid #e2e8f0;
+        text-align: left;
+        font-size: 14px;
+    }
+
+    .queue-table th {
+        background: #f3f7fc;
+        color: #173c70;
+    }
+
+    .process-btn {
+        background: #1768c4;
+        color: white;
+        border: none;
+        border-radius: 7px;
+        padding: 9px 13px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .process-btn:hover {
+        background: #10539f;
+    }
+
+    .empty {
+        text-align: center !important;
+        color: #64748b;
+        padding: 25px !important;
+    }
+
+    .table-scroll {
+        overflow-x: auto;
+    }
+
+    .tatkal-note {
+        background: #eff6ff;
+        border-left: 4px solid #2878d0;
+        padding: 13px;
+        border-radius: 7px;
+        margin-bottom: 18px;
+        color: #174a88;
+    }
+
+    @media (max-width: 650px) {
+        .tatkal-form {
+            grid-template-columns: 1fr;
+        }
+
+        .tatkal-header {
+            padding: 20px;
+        }
+
+        .tatkal-panel {
+            padding: 16px;
+        }
+    }
+</style>
+
+
+<div class="tatkal-page">
+
+    <!-- PAGE HEADER -->
+    <section class="tatkal-header">
+        <h1>Demo Tatkal Booking</h1>
+
+        <p>
+            Tatkal booking is enabled only when Reserved quota
+            becomes FULL for the selected journey.
+        </p>
+
+        <p>
+            This is a project simulation and not official railway Tatkal processing.
+        </p>
+    </section>
+
+
+    <!-- ADD TATKAL REQUEST -->
+    <section class="tatkal-panel">
+
+        <h2>Book Tatkal Ticket</h2>
+
+        <div class="tatkal-note">
+            <strong>Seat Allocation:</strong>
+            Reserved seats: 1–18 |
+            Tatkal seats: 19–24
+        </div>
+
+        <form method="post"
+              action="{{ url_for('tatkal') }}"
+              class="tatkal-form">
+
+            <!-- PASSENGER -->
+            <label>
+                Passenger Name
+
+                <input
+                    type="text"
+                    name="passenger_name"
+                    value="{{ prefill.passenger_name }}"
+                    placeholder="Enter passenger name"
+                    required
+                >
+            </label>
+
+
+            <!-- TRAIN -->
+            <label>
+                Select Train
+
+                <select name="train_id" required>
+
+                    {% for t in trains %}
+
+                    <option
+                        value="{{ t.id }}"
+                        {% if t.id|string == prefill.train_id|string %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ t.id }} — {{ t.name }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+            </label>
+
+
+            <!-- JOURNEY DATE -->
+            <label>
+                Journey Date
+
+                <input
+                    type="date"
+                    name="journey_date"
+                    value="{{ prefill.journey_date }}"
+                    required
+                >
+            </label>
+
+
+            <!-- SOURCE -->
+            <label>
+                From Station
+
+                <select name="source" required>
+
+                    {% for s in stations %}
+
+                    <option
+                        value="{{ s }}"
+                        {% if s == prefill.source %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ s }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+            </label>
+
+
+            <!-- DESTINATION -->
+            <label>
+                To Station
+
+                <select name="destination" required>
+
+                    {% for s in stations %}
+
+                    <option
+                        value="{{ s }}"
+                        {% if s == prefill.destination %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ s }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+            </label>
+
+
+            <button type="submit" class="tatkal-submit">
+                Add Tatkal Request
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- TATKAL FIFO QUEUE -->
+    <section class="tatkal-panel">
+
+        <h2>Tatkal FIFO Queue</h2>
+        <p>Current Login Role: {{ current_user.role }}</p>
+
+        <p>
+            Requests are processed in First-In, First-Out order.
+        </p>
+
+        <div class="table-scroll">
+
+            <table class="queue-table">
+
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Passenger</th>
+                        <th>Train</th>
+                        <th>Journey Date</th>
+                        <th>Route</th>
+                        <th>Availability</th>
+                        <th>Request Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+
+                <tbody>
+
+                    {% for r in requests %}
+
+                    <tr>
+
+                        <!-- POSITION -->
+                        <td>{{ loop.index }}</td>
+
+
+                        <!-- PASSENGER -->
+                        <td>{{ r.passenger_name }}</td>
+
+
+                        <!-- TRAIN -->
+                        <td>{{ r.train_id }}</td>
+
+
+                        <!-- DATE -->
+                        <td>{{ r.journey_date }}</td>
+
+
+                        <!-- ROUTE -->
+                        <td>
+                            {{ r.source }} → {{ r.destination }}
+                        </td>
+
+
+                        <!-- AVAILABILITY -->
+                        <td>
+
+                            {% if r.availability_status == "AVAILABLE" %}
+
+                                <span class="availability available">
+                                    AVAILABLE
+                                </span>
+
+                            {% elif r.availability_status == "CLOSED" %}
+
+                                <span class="availability closed">
+                                    CLOSED
+                                </span>
+
+                            {% elif r.availability_status == "FULL" %}
+
+                                <span class="availability full">
+                                    FULL
+                                </span>
+
+                            {% else %}
+
+                                <span class="availability invalid">
+                                    INVALID ROUTE
+                                </span>
+
+                            {% endif %}
+
+                            {% if r.tatkal_available is defined %}
+                                <br>
+                                <small>
+                                    Tatkal seats:
+                                    {{ r.tatkal_available }}
+                                </small>
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- REQUEST STATUS -->
+                        <td>
+                            {{ r.status }}
+                        </td>
+
+
+                        <!-- ADMIN PROCESS -->
+                        <td>
+
+                            {% if current_user.role == "admin"
+                                  and r.status == "WAITING"
+                                  and r.availability_status == "AVAILABLE" %}
+
+                                <form
+                                    method="post"
+                                    action="{{ url_for(
+                                        'process_tatkal',
+                                        req_id=r.id
+                                    ) }}"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        class="process-btn"
+                                    >
+                                        Process
+                                    </button>
+
+                                </form>
+
+                            {% else %}
+
+                                —
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="8" class="empty">
+                            No Tatkal requests yet.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- BACK LINK -->
+    <a href="{{ url_for('index') }}"
+       style="display:inline-block; margin-top:10px; color:#1768c4; font-weight:bold; text-decoration:none;">
+
+        ← Back to Train Search
+
+    </a>
+
+</div>
+
+{% endblock %}
